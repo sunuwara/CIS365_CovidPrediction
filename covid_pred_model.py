@@ -4,6 +4,9 @@ import numpy as np
 import csv
 import os.path
 
+from states import stateDict
+from timeFrames import timeDict
+
 mainFilepath = "./data/raw-us-states.csv"
 
 
@@ -11,20 +14,28 @@ class CovidPredictorModel:
     """ Class to handle the logic for the Covid-19 Predictor app """
 
     def __init__(self):
-        """ Initialization """
-        pass
+        self.state = ""
+        self.predictionWindow = ""
+
+    def setValues(self, state, predictionWindow):
+        self.state = state
+        self.predictionWindow = predictionWindow
+        print(self.state, self.predictionWindow)
 
     def downloadData(self):
         """ Gets Covid data for US states from: https://github.com/nytimes/covid-19-data """
-        r = requests.get(
-            'https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-states.csv')
+
+        dataURL = "https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-states.csv"
+        r = requests.get(dataURL)
+
         f = open(mainFilepath, 'w')
         f.write(str(r.content, 'utf-8'))
+
         self.cleanData()
 
     def cleanData(self):
         """ Clean the raw US states Covid cases data: split each data into different states """
-        f = open(mainFilepath)
+
         with open(mainFilepath, 'r') as csvFile:
             csvReader = csv.reader(csvFile)
             firstLine = next(csvReader)
