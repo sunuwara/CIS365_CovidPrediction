@@ -4,7 +4,10 @@ import numpy as np
 
 mainFile = "./data/raw-us-states.csv"
 
+
 class CovidPredictorModel:
+    """ Class to handle the logic for the Covid-19 Predictor app """
+
     def __init__(self):
         """ Initialization """
         pass
@@ -18,4 +21,3 @@ class CovidPredictorModel:
 
     def cleanData(self):
         """ Clean the raw US states Covid cases data """
-

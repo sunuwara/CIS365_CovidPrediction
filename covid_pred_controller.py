@@ -1,10 +1,9 @@
-
 from covid_pred_model import CovidPredictorModel
 from covid_pred_view import CovidPredictorView
 
 
 if __name__ == "__main__":
-    print("hello, world")
+    """ Runs the controller for the Covid-19 Predictor app """
 
     # Initialize Model and View
     model = CovidPredictorModel
