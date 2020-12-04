@@ -7,7 +7,7 @@ import os.path
 from states import stateDict
 from timeFrames import timeDict
 
-mainFilepath = "./data/raw-us-states.csv"
+rawdataFilepath = "./data/raw-us-states.csv"
 
 
 class CovidPredictorModel:
@@ -25,10 +25,10 @@ class CovidPredictorModel:
     def downloadData(self):
         """ Gets Covid data for US states from: https://github.com/nytimes/covid-19-data """
 
-        dataURL = "https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-states.csv"
-        r = requests.get(dataURL)
+        data_URL = "https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-states.csv"
+        r = requests.get(data_URL)
 
-        f = open(mainFilepath, 'w')
+        f = open(rawdataFilepath, 'w')
         f.write(str(r.content, 'utf-8'))
 
         self.cleanData()
@@ -36,20 +36,26 @@ class CovidPredictorModel:
     def cleanData(self):
         """ Clean the raw US states Covid cases data: split each data into different states """
 
-        with open(mainFilepath, 'r') as csvFile:
+        # Split raw data by state
+        with open(rawdataFilepath, 'r') as csvFile:
             csvReader = csv.reader(csvFile)
-            firstLine = next(csvReader)
+            firstline = next(csvReader)
+            stateFilepaths = []
 
             for line in csvReader:
-                newFilepath = "./data/" + line[1] + ".csv"
+                stateFilepath = "./data/" + line[1] + ".csv"
 
-                if not os.path.exists(newFilepath):
-                    with open(newFilepath, 'w') as newFile:
-                        # Open file normal mode to add column names to file
-                        csvWriter = csv.writer(newFile)
-                        csvWriter.writerow(firstLine)
+                if stateFilepath in stateFilepaths:
+                    with open(stateFilepath, 'a+', newline='') as appendFile:
+                        # Open file in append mode to add following lines to file
+                        csvWriter = csv.writer(appendFile)
+                        csvWriter.writerow(line)
+                else:
+                    stateFilepaths.append(stateFilepath)
+                    with open(stateFilepath, 'w') as writeFile:
+                        # Open file write mode and add column names to file
+                        csvWriter = csv.writer(writeFile)
+                        csvWriter.writerow(firstline)
 
-                with open(newFilepath, 'a+', newline='') as writeObj:
-                    # Open file in append mode to add following lines to file
-                    csvWriter = csv.writer(writeObj)
-                    csvWriter.writerow(line)
+    def prepareData(self):
+        pass
